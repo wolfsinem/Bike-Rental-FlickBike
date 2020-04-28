@@ -37,9 +37,10 @@ import requests
 from io import StringIO
 import pandas as pd
 
-url = "http://projects.knmi.nl/klimatologie/uurgegevens/getdata_uur.cgi"
-parameters = {'start': '20190101', 'vars': 'TEMP', 'stns': '240'}
-response = requests.get(url, params=parameters)
-columnnames = [column.strip() for column in StringIO(response.text).read().split("#")[-2].split(',')] 
-file_data = pd.read_csv(StringIO(response.text), comment='#', sep=',', names=columnnames, parse_dates=[1], index_col=[1])
-# print(file_data)
+def weather_data():
+    url = "http://projects.knmi.nl/klimatologie/uurgegevens/getdata_uur.cgi"
+    parameters = {'start': '20190101', 'vars': 'TEMP', 'stns': '240'}
+    response = requests.get(url, params=parameters)
+    columnnames = [column.strip() for column in StringIO(response.text).read().split("#")[-2].split(',')] 
+    file_data = pd.read_csv(StringIO(response.text), comment='#', sep=',', names=columnnames, parse_dates=[1], index_col=[1])
+    return file_data
