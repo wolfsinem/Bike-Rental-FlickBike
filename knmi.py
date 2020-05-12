@@ -23,11 +23,6 @@ vars        = Lijst van gewenste variabelen in willekeurige volgorde, aangeduid 
 stns        = Lijst van gewenste stations (nummers) in willekeurige volgorde, gescheiden door ':'. Geen default waarde; Stations 
               móeten zijn gespecificeerd. ALL staat voor álle stations.
 
-Per dag: 
-start = YYYYMMDDHH
-end = YYYYMMDDHH
-HH = eerste en laatste uur
-
 De URL's op de KNMI website:
 - data per uur http://projects.knmi.nl/klimatologie/uurgegevens/getdata_uur.cgi
 - data per dag http://projects.knmi.nl/klimatologie/daggegevens/getdata_dag.cgi  
@@ -37,9 +32,36 @@ import requests
 from io import StringIO
 import pandas as pd
 
-def weather_data():
+def weather_temp_HH():
+    """ Weather data for each hour of a day 
+
+    STN = Station
+    HH = Uur van de dag
+    T = Temperatuur (in 0.1 graden Celsius) op 1.50 m hoogte tijdens de waarneming
+    T10N = Minimumtemperatuur (in 0.1 graden Celsius) op 10 cm hoogte in de afgelopen 6 uur
+    TD = Dauwpuntstemperatuur (in 0.1 graden Celsius) op 1.50 m hoogte tijdens de waarneming
+    """
     url = "http://projects.knmi.nl/klimatologie/uurgegevens/getdata_uur.cgi"
-    parameters = {'start': '20190101', 'vars': 'TEMP', 'stns': '240'}
+    parameters = {'start': '2019010100', 'end': '2019120923', 'vars': 'TEMP', 'stns': '240'}
+    response = requests.get(url, params=parameters)
+    columnnames = [column.strip() for column in StringIO(response.text).read().split("#")[-2].split(',')] 
+    file_data = pd.read_csv(StringIO(response.text), comment='#', sep=',', names=columnnames, parse_dates=[1], index_col=[1])
+    return file_data
+
+def weather_temp_DD():
+    """ Weather data for each day
+
+    STN = Station
+    TG = Etmaalgemiddelde temperatuur (in 0.1 graden Celsius)
+    TN = Minimum temperatuur (in 0.1 graden Celsius)
+    TNH = Uurvak waarin TN is gemeten
+    TX = Maximum temperatuur (in 0.1 graden Celsius)
+    TXH = Uurvak waarin TX is gemeten
+    T10N = Minimum temperatuur op 10 cm hoogte (in 0.1 graden Celsius)
+    T10NH = 6-uurs tijdvak waarin T10N is gemeten
+    """
+    url = "http://projects.knmi.nl/klimatologie/daggegevens/getdata_dag.cgi"
+    parameters = {'start': '20190101', 'end': '20191209', 'vars': 'TEMP', 'stns': '240'}
     response = requests.get(url, params=parameters)
     columnnames = [column.strip() for column in StringIO(response.text).read().split("#")[-2].split(',')] 
     file_data = pd.read_csv(StringIO(response.text), comment='#', sep=',', names=columnnames, parse_dates=[1], index_col=[1])
