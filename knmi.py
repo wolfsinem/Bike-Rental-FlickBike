@@ -61,7 +61,44 @@ def weather_temp_DD():
     T10NH = 6-uurs tijdvak waarin T10N is gemeten
     """
     url = "http://projects.knmi.nl/klimatologie/daggegevens/getdata_dag.cgi"
-    parameters = {'start': '20190101', 'end': '20191209', 'vars': 'TEMP', 'stns': '240'}
+    parameters = {'start': '20190101', 'end': '20200131', 'vars': 'TEMP', 'stns': '240'}
+    response = requests.get(url, params=parameters)
+    columnnames = [column.strip() for column in StringIO(response.text).read().split("#")[-2].split(',')] 
+    file_data = pd.read_csv(StringIO(response.text), comment='#', sep=',', names=columnnames, parse_dates=[1], index_col=[1])
+    return file_data
+
+def weather_wind_DD():
+    """ Weather data for each day
+
+    STN = Station
+    DDVEC = Vectorgemiddelde windrichting in graden (360=noord, 90=oost, 180=zuid, 270=west, 0=windstil/variabel)
+    FHVEC = Vectorgemiddelde windsnelheid (in 0.1 m/s)
+    FG = Etmaalgemiddelde windsnelheid (in 0.1 m/s)
+    FHX	= Hoogste uurgemiddelde windsnelheid (in 0.1 m/s)
+    FHXH = Uurvak waarin FHX is gemeten
+    FHN	= Laagste uurgemiddelde windsnelheid (in 0.1 m/s)
+    FHNH = Uurvak waarin FHN is gemeten
+    FXX	= Hoogste windstoot (in 0.1 m/s)
+    FXXH = Uurvak waarin FXX is gemeten
+    """
+    url = "http://projects.knmi.nl/klimatologie/daggegevens/getdata_dag.cgi"
+    parameters = {'start': '20190101', 'end': '20200131', 'vars': 'WIND', 'stns': '240'}
+    response = requests.get(url, params=parameters)
+    columnnames = [column.strip() for column in StringIO(response.text).read().split("#")[-2].split(',')] 
+    file_data = pd.read_csv(StringIO(response.text), comment='#', sep=',', names=columnnames, parse_dates=[1], index_col=[1])
+    return file_data
+
+def weather_PRCP_DD():
+    """ Weather data for each day
+
+    DR = Duur van de neerslag (in 0.1 uur)
+    RH = Etmaalsom van de neerslag (in 0.1 mm) (-1 voor <0.05 mm)
+    RHX	= Hoogste uursom van de neerslag (in 0.1 mm) (-1 voor <0.05 mm)
+    RHXH = Uurvak waarin RHX is gemeten
+    EV24 = Referentiegewasverdamping (Makkink) (in 0.1 mm)
+    """
+    url = "http://projects.knmi.nl/klimatologie/daggegevens/getdata_dag.cgi"
+    parameters = {'start': '20190101', 'end': '20200131', 'vars': 'PRCP', 'stns': '240'}
     response = requests.get(url, params=parameters)
     columnnames = [column.strip() for column in StringIO(response.text).read().split("#")[-2].split(',')] 
     file_data = pd.read_csv(StringIO(response.text), comment='#', sep=',', names=columnnames, parse_dates=[1], index_col=[1])
