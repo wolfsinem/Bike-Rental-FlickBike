@@ -6,4 +6,4 @@ Voor het vak Distributed Processing
 file: [flickbike_analysis.ipynb](https://github.com/wolfsinem/Bike-Rental-FlickBike/blob/master/notebook/flickbike_analysis.ipynb)
 
 #### Opdracht 2: Data-analyse
-file: [prediction_model.ipynb(https://github.com/wolfsinem/Bike-Rental-FlickBike/blob/master/notebook/prediction%20model%20for%20bike%20rental.ipynb)
+file: [prediction_model.ipynb](https://github.com/wolfsinem/Bike-Rental-FlickBike/blob/master/notebook/prediction%20model%20for%20bike%20rental.ipynb)
